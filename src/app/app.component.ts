@@ -45,25 +45,35 @@ export class AppComponent implements OnInit {
       let docId = Date.now() + Math.random().toString(16).substr(2, 9)
       let newItem = this.collectionRef.doc(docId);
       let http = this.http;
-      newItem.set({
-        download_url: item.file.name,
-        size: item.file.size,
-        type: item.file.type
-      }).then(function(){
-        http.post('https://jsonplaceholder.typicode.com/posts/1/comments', {}).subscribe(function(response){
-          newItem.update({post_status: JSON.stringify(response)});
-          console.log("GET request made :", arguments)
-        }, function(error) {
-          newItem.update({post_status: JSON.stringify(error)});
-        });
-      })
-      .then(function() {
-          console.log("Document successfully written!");
-      })
-      .catch(function(error) {
-          console.error("Error writing document: ", error);
-      });
-      this.toastr.success('File successfully uploaded!');
+      let file = item.file;
+      let toastr = this.toastr;
+      let fileAsEncodedString;
+
+      //convert to base64 encoded string
+      const fileReader: FileReader = new FileReader();
+      fileReader.onload = (event: Event) => {
+         fileAsEncodedString = fileReader.result;
+         newItem.set({
+           download_url: file.name,
+           size: file.size,
+           type: file.type
+         }).then(function(){
+           http.post('https://jsonplaceholder.typicode.com/posts/1/comments', {fileAsEncodedString: fileAsEncodedString}).subscribe(function(response){
+             newItem.update({post_status: JSON.stringify(response)});
+             console.log("GET request made :", arguments)
+           }, function(error) {
+             newItem.update({post_status: JSON.stringify(error)});
+           });
+         })
+         .then(function() {
+             console.log("Document successfully written!");
+         })
+         .catch(function(error) {
+             console.error("Error writing document: ", error);
+         });
+         toastr.success('File successfully uploaded!');
+      };
+      fileReader.readAsDataURL(file.rawFile);
     };
   }
 
