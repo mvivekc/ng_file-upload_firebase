@@ -47,4 +47,6 @@ testem.log
 # System Files
 .DS_Store
 ./backend/uploads/
+*/environment.ts
 Thumbs.db
+

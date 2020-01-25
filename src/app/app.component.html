@@ -2,10 +2,7 @@
   <h2>Angular Image Upload Demo</h2>
 
   <div class="file-upload">
-    <input type="file" name="image" ng2FileSelect [uploader]="uploader" accept="image/x-png,image/gif,image/jpeg" />
-    <button type="button" (click)="uploader.uploadAll()">
-      Upload
-    </button>
+    <input type="file" (change)="uploadFile($event)" name="image" accept="image/x-png,image/gif,image/jpeg" />
   </div>
   <ul>
     <li class="text" *ngFor="let item of items | async">

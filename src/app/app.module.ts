@@ -11,6 +11,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http'; 
+import { AngularFireStorageModule } from 'angularfire2/storage';
+
 
 
 
@@ -24,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     HttpClientModule, 
     AngularFireModule.initializeApp(environment.firebaseConfig), 
+    AngularFireStorageModule,
     CommonModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot() // ToastrModule added

@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 
 
 
@@ -22,59 +23,45 @@ export interface Upload {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'demo';
   items: Observable<any[]>;
   collectionRef: AngularFirestoreCollection<Upload[]>;
+  ref: AngularFireStorageReference;
+  task: AngularFireUploadTask;
 
-  public uploader: FileUploader = new FileUploader({
-    url: URL,
-    itemAlias: 'image'
-  });
-
-  constructor(private toastr: ToastrService, private db: AngularFirestore, private http:HttpClient) {
+  constructor(private toastr: ToastrService, private db: AngularFirestore, private http:HttpClient, private afStorage: AngularFireStorage) {
     this.collectionRef = db.collection('purpose_build');
+    this.afStorage = afStorage;
     this.items = this.collectionRef.valueChanges();
   }
+  uploadFile(event) {
+    const id = Math.random().toString(36).substring(2);
+    let ref = this.afStorage.ref(id);
+    let file:File = event.target.files[0];
+    let task = ref.put(file);
+    let fileAsEncodedString;
+    var myReader:FileReader = new FileReader();
 
-  ngOnInit() {
-    this.uploader.onAfterAddingFile = (file) => {
-      file.withCredentials = false;
-    };
-    this.uploader.onCompleteItem = (item: any, status: any) => {
-      let docId = Date.now() + Math.random().toString(16).substr(2, 9)
-      let newItem = this.collectionRef.doc(docId);
-      let http = this.http;
-      let file = item.file;
-      let toastr = this.toastr;
-      let fileAsEncodedString;
+    myReader.onloadend = (e) => {
+      fileAsEncodedString = myReader.result;
+    }
+    myReader.readAsDataURL(file);
 
-      //convert to base64 encoded string
-      const fileReader: FileReader = new FileReader();
-      fileReader.onload = (event: Event) => {
-         fileAsEncodedString = fileReader.result;
-         newItem.set({
-           download_url: file.name,
-           size: file.size,
-           type: file.type
-         }).then(function(){
-           http.post('https://jsonplaceholder.typicode.com/posts/1/comments', {fileAsEncodedString: fileAsEncodedString}).subscribe(function(response){
-             newItem.update({post_status: JSON.stringify(response)});
-             console.log("GET request made :", arguments)
-           }, function(error) {
-             newItem.update({post_status: JSON.stringify(error)});
-           });
-         })
-         .then(function() {
-             console.log("Document successfully written!");
-         })
-         .catch(function(error) {
-             console.error("Error writing document: ", error);
-         });
-         toastr.success('File successfully uploaded!');
-      };
-      fileReader.readAsDataURL(file.rawFile);
-    };
+    let docId = Date.now() + Math.random().toString(16).substr(2, 9)
+    let newItem = this.collectionRef.doc(docId);
+    let http = this.http;
+    newItem.set({
+      download_url: file.name,
+      size: file.size,
+      type: file.type
+    }).then(function(){
+      http.post('https://jsonplaceholder.typicode.com/posts/1/comments', {fileAsEncodedString: fileAsEncodedString}).subscribe(function(response){
+        newItem.update({post_status: JSON.stringify(response)});
+        console.log("GET request made :", arguments)
+      }, function(error) {
+        newItem.update({post_status: JSON.stringify(error)});
+      });
+    });
   }
-
 }
