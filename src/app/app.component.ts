@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
+import { Component } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 
 
@@ -30,7 +28,7 @@ export class AppComponent {
   ref: AngularFireStorageReference;
   task: AngularFireUploadTask;
 
-  constructor(private toastr: ToastrService, private db: AngularFirestore, private http:HttpClient, private afStorage: AngularFireStorage) {
+  constructor(private db: AngularFirestore, private http:HttpClient, private afStorage: AngularFireStorage) {
     this.collectionRef = db.collection('purpose_build');
     this.afStorage = afStorage;
     this.items = this.collectionRef.valueChanges();
@@ -40,7 +38,8 @@ export class AppComponent {
     let ref = this.afStorage.ref(id);
     let file:File = event.target.files[0];
     let task = ref.put(file);
-    let fileAsEncodedString;
+
+/*    let fileAsEncodedString;
     var myReader:FileReader = new FileReader();
 
     myReader.onloadend = (e) => {
@@ -62,6 +61,6 @@ export class AppComponent {
       }, function(error) {
         newItem.update({post_status: JSON.stringify(error)});
       });
-    });
+    });*/
   }
 }

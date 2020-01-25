@@ -48,5 +48,6 @@ testem.log
 .DS_Store
 ./backend/uploads/
 */environment.ts
+*/environment.prod.ts
 Thumbs.db
 

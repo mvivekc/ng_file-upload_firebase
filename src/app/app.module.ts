@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import {CommonModule} from '@angular/common'
 import { AppComponent } from './app.component';
-import { FileSelectDirective } from 'ng2-file-upload';
 import { FormsModule } from '@angular/forms';
 
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -18,8 +17,7 @@ import { AngularFireStorageModule } from 'angularfire2/storage';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    FileSelectDirective
+    AppComponent
   ],
   imports: [
     FormsModule,
