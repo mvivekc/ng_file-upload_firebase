@@ -22,7 +22,7 @@
     "@angular/router": "~8.2.14",
     "@google-cloud/storage": "^0.4.0",
     "angularfire2": "^5.3.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "child-process-promise": "^2.2.0",
     "firebase": "^7.7.0",
     "firebase-admin": "~7.1.1",
